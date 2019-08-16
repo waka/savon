@@ -39,7 +39,7 @@ describe Savon2::Client do
 
     it "raises if initialized with anything other than a Hash" do
       expect { Savon2.client("http://example.com") }.
-        to raise_error(Savon2::InitializationError, /Some code tries to initialize Savon2 with the "http:\/\/example\.com" \(String\)/)
+        to raise_error(Savon2::InitializationError, /Some code tries to initialize Savon with the "http:\/\/example\.com" \(String\)/)
     end
 
     it "raises if not initialized with either a :wsdl or both :endpoint and :namespace options" do
