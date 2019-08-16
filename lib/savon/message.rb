@@ -1,7 +1,7 @@
 require "savon/qualified_message"
 require "gyoku"
 
-module Savon
+module Savon2
   class Message
 
     def initialize(message_tag, namespace_identifier, types, used_namespaces, message, element_form_default, key_converter, unwrap)

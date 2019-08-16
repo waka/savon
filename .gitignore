@@ -12,3 +12,5 @@ tmp
 .rspec
 Gemfile.lock
 bin/
+
+vendor

@@ -1,7 +1,7 @@
 require "spec_helper"
 require "integration/support/server"
 
-describe Savon::Message do
+describe Savon2::Message do
 
   before do
     @server = IntegrationServer.run
@@ -24,7 +24,7 @@ describe Savon::Message do
     }
   }
 
-  let(:client) { Savon.client(client_config) }
+  let(:client) { Savon2.client(client_config) }
 
   context "with a qualified message" do
     let(:message) {

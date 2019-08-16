@@ -1,5 +1,5 @@
 
-module Savon
+module Savon2
   module CoreExt
     module String
 
@@ -26,4 +26,4 @@ module Savon
   end
 end
 
-String.send :include, Savon::CoreExt::String
+String.send :include, Savon2::CoreExt::String

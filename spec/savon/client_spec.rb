@@ -1,7 +1,7 @@
 require "spec_helper"
 require "integration/support/server"
 
-describe Savon::Client do
+describe Savon2::Client do
 
   before :all do
     @server = IntegrationServer.run
@@ -13,7 +13,7 @@ describe Savon::Client do
 
   describe ".new" do
     it "supports a block without arguments to create a client with global options" do
-      client = Savon.client do
+      client = Savon2.client do
         wsdl Fixture.wsdl(:authentication)
       end
 
@@ -21,7 +21,7 @@ describe Savon::Client do
     end
 
     it "supports a block with one argument to create a client with global options" do
-      client = Savon.client do |globals|
+      client = Savon2.client do |globals|
         globals.wsdl Fixture.wsdl(:authentication)
       end
 
@@ -31,40 +31,40 @@ describe Savon::Client do
     it "builds an HTTPI request for Wasabi" do
       http_request = mock
       wsdl_request = mock(:build => http_request)
-      Savon::WSDLRequest.expects(:new).with(instance_of(Savon::GlobalOptions)).returns(wsdl_request)
+      Savon2::WSDLRequest.expects(:new).with(instance_of(Savon2::GlobalOptions)).returns(wsdl_request)
 
       Wasabi::Document.any_instance.expects(:request=).with(http_request)
-      Savon.client(:wsdl => "http://example.com")
+      Savon2.client(:wsdl => "http://example.com")
     end
 
     it "raises if initialized with anything other than a Hash" do
-      expect { Savon.client("http://example.com") }.
-        to raise_error(Savon::InitializationError, /Some code tries to initialize Savon with the "http:\/\/example\.com" \(String\)/)
+      expect { Savon2.client("http://example.com") }.
+        to raise_error(Savon2::InitializationError, /Some code tries to initialize Savon2 with the "http:\/\/example\.com" \(String\)/)
     end
 
     it "raises if not initialized with either a :wsdl or both :endpoint and :namespace options" do
-      expect { Savon.client(:endpoint => "http://example.com") }.
-        to raise_error(Savon::InitializationError, /Expected either a WSDL document or the SOAP endpoint and target namespace options/)
+      expect { Savon2.client(:endpoint => "http://example.com") }.
+        to raise_error(Savon2::InitializationError, /Expected either a WSDL document or the SOAP endpoint and target namespace options/)
     end
 
     it "raises a when given an unknown option via the Hash syntax" do
-      expect { Savon.client(:invalid_global_option => true) }.
-        to raise_error(Savon::UnknownOptionError, "Unknown global option: :invalid_global_option")
+      expect { Savon2.client(:invalid_global_option => true) }.
+        to raise_error(Savon2::UnknownOptionError, "Unknown global option: :invalid_global_option")
     end
 
     it "raises a when given an unknown option via the block syntax" do
-      expect { Savon.client { another_invalid_global_option true } }.
-        to raise_error(Savon::UnknownOptionError, "Unknown global option: :another_invalid_global_option")
+      expect { Savon2.client { another_invalid_global_option true } }.
+        to raise_error(Savon2::UnknownOptionError, "Unknown global option: :another_invalid_global_option")
     end
   end
 
   describe "#globals" do
     it "returns the current set of global options" do
-      expect(new_client.globals).to be_an_instance_of(Savon::GlobalOptions)
+      expect(new_client.globals).to be_an_instance_of(Savon2::GlobalOptions)
     end
 
     fit "defaults :log to false" do
-      client = Savon.client(:wsdl => Fixture.wsdl(:authentication))
+      client = Savon2.client(:wsdl => Fixture.wsdl(:authentication))
       expect(client.globals[:log]).to be_falsey
     end
   end
@@ -89,12 +89,12 @@ describe Savon::Client do
   describe "#operation" do
     it "returns a new SOAP operation" do
       operation = new_client.operation(:authenticate)
-      expect(operation).to be_a(Savon::Operation)
+      expect(operation).to be_a(Savon2::Operation)
     end
 
     it "raises if there's no such SOAP operation" do
       expect { new_client.operation(:does_not_exist) }.
-        to raise_error(Savon::UnknownOperationError)
+        to raise_error(Savon2::UnknownOperationError)
     end
 
     it "does not raise when there is no WSDL document" do
@@ -108,13 +108,13 @@ describe Savon::Client do
       soap_response = new_soap_response
 
       wsdl = Wasabi::Document.new('http://example.com')
-      operation = Savon::Operation.new(:authenticate, wsdl, Savon::GlobalOptions.new)
+      operation = Savon2::Operation.new(:authenticate, wsdl, Savon2::GlobalOptions.new)
       operation.expects(:call).with(locals).returns(soap_response)
 
-      Savon::Operation.expects(:create).with(
+      Savon2::Operation.expects(:create).with(
         :authenticate,
         instance_of(Wasabi::Document),
-        instance_of(Savon::GlobalOptions)
+        instance_of(Savon2::GlobalOptions)
       ).returns(operation)
 
       response = new_client.call(:authenticate, locals)
@@ -161,12 +161,12 @@ describe Savon::Client do
 
     it "raises a when given an unknown option via the Hash syntax" do
       expect { new_client.call(:authenticate, :invalid_local_option => true) }.
-        to raise_error(Savon::UnknownOptionError, "Unknown local option: :invalid_local_option")
+        to raise_error(Savon2::UnknownOptionError, "Unknown local option: :invalid_local_option")
     end
 
     it "raises a when given an unknown option via the block syntax" do
       expect { new_client.call(:authenticate) { another_invalid_local_option true } }.
-        to raise_error(Savon::UnknownOptionError, "Unknown local option: :another_invalid_local_option")
+        to raise_error(Savon2::UnknownOptionError, "Unknown local option: :another_invalid_local_option")
     end
   end
 
@@ -175,17 +175,17 @@ describe Savon::Client do
       expected_request = mock('request')
       wsdl = Wasabi::Document.new('http://example.com')
 
-      operation = Savon::Operation.new(
+      operation = Savon2::Operation.new(
         :authenticate,
         wsdl,
-        Savon::GlobalOptions.new
+        Savon2::GlobalOptions.new
       )
       operation.expects(:request).returns(expected_request)
 
-      Savon::Operation.expects(:create).with(
+      Savon2::Operation.expects(:create).with(
         :authenticate,
         instance_of(Wasabi::Document),
-        instance_of(Savon::GlobalOptions)
+        instance_of(Savon2::GlobalOptions)
       ).returns(operation)
 
       operation.expects(:call).never
@@ -252,20 +252,20 @@ describe Savon::Client do
 
   def new_soap_response(options = {})
     http = new_http_response(options)
-    globals = Savon::GlobalOptions.new
-    locals = Savon::LocalOptions.new
+    globals = Savon2::GlobalOptions.new
+    locals = Savon2::LocalOptions.new
 
-    Savon::Response.new(http, globals, locals)
+    Savon2::Response.new(http, globals, locals)
   end
 
   def new_client(globals = {})
     globals = { :wsdl => Fixture.wsdl(:authentication), :log => false }.merge(globals)
-    Savon.client(globals)
+    Savon2.client(globals)
   end
 
   def new_client_without_wsdl(globals = {})
     globals = { :endpoint => "http://example.co", :namespace => "http://v1.example.com", :log => false }.merge(globals)
-    Savon.client(globals)
+    Savon2.client(globals)
   end
 
 end

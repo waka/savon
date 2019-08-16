@@ -6,7 +6,7 @@ require "savon/response"
 require "savon/request_logger"
 require "savon/http_error"
 
-module Savon
+module Savon2
   class Operation
 
     def self.create(operation_name, wsdl, globals)
@@ -50,7 +50,7 @@ module Savon
     def call(locals = {}, &block)
       builder = build(locals, &block)
 
-      response = Savon.notify_observers(@name, builder, @globals, @locals)
+      response = Savon2.notify_observers(@name, builder, @globals, @locals)
       response ||= call_with_logging build_request(builder)
 
       raise_expected_httpi_response! unless response.kind_of?(HTTPI::Response)
@@ -76,10 +76,10 @@ module Savon
     def multipart_supported?
       return false unless @globals[:multipart] || @locals[:multipart]
 
-      if Savon.const_defined? :Multipart
+      if Savon2.const_defined? :Multipart
         true
       else
-        raise 'Unable to find Savon::Multipart. Make sure the savon-multipart gem is installed and loaded.'
+        raise 'Unable to find Savon2::Multipart. Make sure the savon-multipart gem is installed and loaded.'
       end
     end
 

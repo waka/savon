@@ -1,4 +1,4 @@
-module Savon
+module Savon2
   class BlockInterface
 
     def initialize(target)

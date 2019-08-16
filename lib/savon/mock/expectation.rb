@@ -1,6 +1,6 @@
 require "httpi"
 
-module Savon
+module Savon2
   class MockExpectation
 
     def initialize(operation_name)

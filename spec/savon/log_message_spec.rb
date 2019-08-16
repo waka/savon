@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Savon::LogMessage do
+describe Savon2::LogMessage do
 
   it "returns the message if it's not XML" do
     message = log_message("hello", [:password], :pretty_print).to_s
@@ -44,7 +44,7 @@ describe Savon::LogMessage do
   end
 
   def log_message(*args)
-    Savon::LogMessage.new(*args)
+    Savon2::LogMessage.new(*args)
   end
 
 end

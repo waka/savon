@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Savon do
+describe Savon2 do
 
   it 'knows the message tag for :authentication' do
     message_tag = message_tag_for(:authentication, :authenticate)
@@ -38,9 +38,9 @@ describe Savon do
   end
 
   def message_tag_for(fixture, operation_name)
-    globals     = Savon::GlobalOptions.new(:log => false)
+    globals     = Savon2::GlobalOptions.new(:log => false)
     wsdl        = Wasabi::Document.new Fixture.wsdl(fixture)
-    operation   = Savon::Operation.create(operation_name, wsdl, globals)
+    operation   = Savon2::Operation.create(operation_name, wsdl, globals)
     request_xml = operation.build.to_s
 
     nsid, local = extract_message_tag_from_request(request_xml)

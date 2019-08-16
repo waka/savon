@@ -1,25 +1,25 @@
 require "spec_helper"
 
-describe Savon::Response do
+describe Savon2::Response do
 
-  let(:globals) { Savon::GlobalOptions.new }
-  let(:locals)  { Savon::LocalOptions.new }
+  let(:globals) { Savon2::GlobalOptions.new }
+  let(:locals)  { Savon2::LocalOptions.new }
 
   describe ".new" do
-    it "should raise a Savon::Fault in case of a SOAP fault" do
-      expect { soap_fault_response }.to raise_error(Savon::SOAPFault)
+    it "should raise a Savon2::Fault in case of a SOAP fault" do
+      expect { soap_fault_response }.to raise_error(Savon2::SOAPFault)
     end
 
-    it "should not raise a Savon::Fault in case the default is turned off" do
+    it "should not raise a Savon2::Fault in case the default is turned off" do
       globals[:raise_errors] = false
       expect { soap_fault_response }.not_to raise_error
     end
 
-    it "should raise a Savon::HTTP::Error in case of an HTTP error" do
-      expect { soap_response :code => 500 }.to raise_error(Savon::HTTPError)
+    it "should raise a Savon2::HTTP::Error in case of an HTTP error" do
+      expect { soap_response :code => 500 }.to raise_error(Savon2::HTTPError)
     end
 
-    it "should not raise a Savon::HTTP::Error in case the default is turned off" do
+    it "should not raise a Savon2::HTTP::Error in case the default is turned off" do
       globals[:raise_errors] = false
       soap_response :code => 500
     end
@@ -61,7 +61,7 @@ describe Savon::Response do
     end
 
     it "should return a SOAPFault in case of a SOAP fault" do
-      expect(soap_fault_response.soap_fault).to be_a(Savon::SOAPFault)
+      expect(soap_fault_response.soap_fault).to be_a(Savon2::SOAPFault)
     end
   end
 
@@ -85,7 +85,7 @@ describe Savon::Response do
     end
 
     it "should return a HTTPError in case of an HTTP error" do
-      expect(soap_response(:code => 500).http_error).to be_a(Savon::HTTPError)
+      expect(soap_response(:code => 500).http_error).to be_a(Savon2::HTTPError)
     end
   end
 
@@ -129,7 +129,7 @@ describe Savon::Response do
     end
 
     it "should throw an exception when the response header isn't parsable" do
-      expect { invalid_soap_response.header }.to raise_error Savon::InvalidResponseError
+      expect { invalid_soap_response.header }.to raise_error Savon2::InvalidResponseError
     end
   end
 
@@ -238,7 +238,7 @@ describe Savon::Response do
 
     it 'fails correctly when envelope contains only string' do
       response = soap_response({ :body => Fixture.response(:no_body) })
-      expect { response.find('Body') }.to raise_error Savon::InvalidResponseError
+      expect { response.find('Body') }.to raise_error Savon2::InvalidResponseError
     end
   end
 
@@ -253,7 +253,7 @@ describe Savon::Response do
     response = defaults.merge options
     http_response = HTTPI::Response.new(response[:code], response[:headers], response[:body])
 
-    Savon::Response.new(http_response, globals, locals)
+    Savon2::Response.new(http_response, globals, locals)
   end
 
   def soap_fault_response
@@ -269,7 +269,7 @@ describe Savon::Response do
     response = defaults.merge options
     http_response = HTTPI::Response.new(response[:code], response[:headers], response[:body])
 
-    Savon::Response.new(http_response, globals, locals)
+    Savon2::Response.new(http_response, globals, locals)
   end
 
 end

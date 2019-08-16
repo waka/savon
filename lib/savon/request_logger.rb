@@ -1,6 +1,6 @@
 require "savon/log_message"
 
-module Savon
+module Savon2
   class RequestLogger
 
     def initialize(globals)

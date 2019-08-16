@@ -1,7 +1,7 @@
 require "spec_helper"
 require "integration/support/server"
 
-describe Savon do
+describe Savon2 do
 
   before :all do
     @server = IntegrationServer.run
@@ -13,7 +13,7 @@ describe Savon do
 
   describe ".observers" do
     after :each do
-      Savon.observers.clear
+      Savon2.observers.clear
     end
 
     it "allows to register an observer for every request" do
@@ -34,15 +34,15 @@ describe Savon do
 
       }.new
 
-      Savon.observers << observer
+      Savon2.observers << observer
 
       new_client.call(:authenticate)
 
       expect(observer.operation_name).to eq(:authenticate)
 
-      expect(observer.builder).to be_a(Savon::Builder)
-      expect(observer.globals).to be_a(Savon::GlobalOptions)
-      expect(observer.locals).to  be_a(Savon::LocalOptions)
+      expect(observer.builder).to be_a(Savon2::Builder)
+      expect(observer.globals).to be_a(Savon2::GlobalOptions)
+      expect(observer.locals).to  be_a(Savon2::LocalOptions)
     end
 
     it "allows to register an observer which mocks requests" do
@@ -55,7 +55,7 @@ describe Savon do
 
       }.new
 
-      Savon.observers << observer
+      Savon2.observers << observer
 
       response = new_client.call(:authenticate)
 
@@ -73,16 +73,16 @@ describe Savon do
 
       }.new
 
-      Savon.observers << observer
+      Savon2.observers << observer
 
       expect { new_client.call(:authenticate) }.
-        to raise_error(Savon::Error, "Observers need to return an HTTPI::Response " \
+        to raise_error(Savon2::Error, "Observers need to return an HTTPI::Response " \
                                      "to mock the request or nil to execute the request.")
     end
   end
 
   def new_client
-    Savon.client(
+    Savon2.client(
       :endpoint  => @server.url(:repeat),
       :namespace => "http://v1.example.com",
       :log       => false

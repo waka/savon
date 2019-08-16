@@ -1,6 +1,6 @@
 require "spec_helper"
 
-module Savon
+module Savon2
   describe QualifiedMessage, "#to_hash" do
 
     context "if a key ends with !" do

@@ -1,4 +1,4 @@
-module Savon
+module Savon2
   class SOAPFault < Error
 
     def self.present?(http, xml = nil)

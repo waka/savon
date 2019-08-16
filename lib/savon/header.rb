@@ -2,7 +2,7 @@ require "akami"
 require "gyoku"
 require "securerandom"
 
-module Savon
+module Savon2
   class Header
 
     def initialize(globals, locals)

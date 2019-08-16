@@ -1,20 +1,20 @@
 require "spec_helper"
 
-describe Savon::SOAPFault do
-  let(:soap_fault) { Savon::SOAPFault.new new_response(:body => Fixture.response(:soap_fault)), nori }
-  let(:soap_fault2) { Savon::SOAPFault.new new_response(:body => Fixture.response(:soap_fault12)), nori }
-  let(:soap_fault_funky) { Savon::SOAPFault.new new_response(:body => Fixture.response(:soap_fault_funky)), nori }
-  let(:soap_fault_nc) { Savon::SOAPFault.new new_response(:body => Fixture.response(:soap_fault)), nori_no_convert }
-  let(:soap_fault_nc2) { Savon::SOAPFault.new new_response(:body => Fixture.response(:soap_fault12)), nori_no_convert }
-  let(:another_soap_fault) { Savon::SOAPFault.new new_response(:body => Fixture.response(:another_soap_fault)), nori }
-  let(:soap_fault_no_body) { Savon::SOAPFault.new new_response(:body => {}), nori }
-  let(:no_fault) { Savon::SOAPFault.new new_response, nori }
+describe Savon2::SOAPFault do
+  let(:soap_fault) { Savon2::SOAPFault.new new_response(:body => Fixture.response(:soap_fault)), nori }
+  let(:soap_fault2) { Savon2::SOAPFault.new new_response(:body => Fixture.response(:soap_fault12)), nori }
+  let(:soap_fault_funky) { Savon2::SOAPFault.new new_response(:body => Fixture.response(:soap_fault_funky)), nori }
+  let(:soap_fault_nc) { Savon2::SOAPFault.new new_response(:body => Fixture.response(:soap_fault)), nori_no_convert }
+  let(:soap_fault_nc2) { Savon2::SOAPFault.new new_response(:body => Fixture.response(:soap_fault12)), nori_no_convert }
+  let(:another_soap_fault) { Savon2::SOAPFault.new new_response(:body => Fixture.response(:another_soap_fault)), nori }
+  let(:soap_fault_no_body) { Savon2::SOAPFault.new new_response(:body => {}), nori }
+  let(:no_fault) { Savon2::SOAPFault.new new_response, nori }
 
   let(:nori) { Nori.new(:strip_namespaces => true, :convert_tags_to => lambda { |tag| tag.snakecase.to_sym }) }
   let(:nori_no_convert) { Nori.new(:strip_namespaces => true, :convert_tags_to => nil) }
 
-  it "inherits from Savon::Error" do
-    expect(Savon::SOAPFault.ancestors).to include(Savon::Error)
+  it "inherits from Savon2::Error" do
+    expect(Savon2::SOAPFault.ancestors).to include(Savon2::Error)
   end
 
   describe "#http" do
@@ -26,21 +26,21 @@ describe Savon::SOAPFault do
   describe ".present?" do
     it "returns true if the HTTP response contains a SOAP 1.1 fault" do
       http = new_response(:body => Fixture.response(:soap_fault))
-      expect(Savon::SOAPFault.present? http).to be_truthy
+      expect(Savon2::SOAPFault.present? http).to be_truthy
     end
 
     it "returns true if the HTTP response contains a SOAP 1.2 fault" do
       http = new_response(:body => Fixture.response(:soap_fault12))
-      expect(Savon::SOAPFault.present? http).to be_truthy
+      expect(Savon2::SOAPFault.present? http).to be_truthy
     end
 
     it "returns true if the HTTP response contains a SOAP fault with different namespaces" do
       http = new_response(:body => Fixture.response(:another_soap_fault))
-      expect(Savon::SOAPFault.present? http).to be_truthy
+      expect(Savon2::SOAPFault.present? http).to be_truthy
     end
 
     it "returns false unless the HTTP response contains a SOAP fault" do
-      expect(Savon::SOAPFault.present? new_response).to be_falsey
+      expect(Savon2::SOAPFault.present? new_response).to be_falsey
     end
   end
 

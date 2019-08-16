@@ -1,16 +1,16 @@
 require "savon/mock"
 
-module Savon
+module Savon2
   module SpecHelper
 
     class Interface
 
       def mock!
-        Savon.observers << self
+        Savon2.observers << self
       end
 
       def unmock!
-        Savon.observers.clear
+        Savon2.observers.clear
       end
 
       def expects(operation_name)

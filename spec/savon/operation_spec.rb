@@ -3,9 +3,9 @@ require "integration/support/server"
 require "json"
 require "ostruct"
 
-describe Savon::Operation do
+describe Savon2::Operation do
 
-  let(:globals) { Savon::GlobalOptions.new(:endpoint => @server.url(:repeat), :log => false) }
+  let(:globals) { Savon2::GlobalOptions.new(:endpoint => @server.url(:repeat), :log => false) }
   let(:wsdl)    { Wasabi::Document.new Fixture.wsdl(:taxcloud) }
 
   let(:no_wsdl) {
@@ -18,7 +18,7 @@ describe Savon::Operation do
   }
 
   def new_operation(operation_name, wsdl, globals)
-    Savon::Operation.create(operation_name, wsdl, globals)
+    Savon2::Operation.create(operation_name, wsdl, globals)
   end
 
   before :all do
@@ -32,7 +32,7 @@ describe Savon::Operation do
   describe ".create with a WSDL" do
     it "returns a new operation" do
       operation = new_operation(:verify_address, wsdl, globals)
-      expect(operation).to be_a(Savon::Operation)
+      expect(operation).to be_a(Savon2::Operation)
     end
 
     it "raises if the operation name is not a Symbol" do
@@ -42,7 +42,7 @@ describe Savon::Operation do
 
     it "raises if the operation is not available for the service" do
       expect { new_operation(:no_such_operation, wsdl, globals) }.
-        to raise_error(Savon::UnknownOperationError, /Unable to find SOAP operation: :no_such_operation/)
+        to raise_error(Savon2::UnknownOperationError, /Unable to find SOAP operation: :no_such_operation/)
     end
 
     it "raises if the endpoint cannot be reached" do
@@ -52,14 +52,14 @@ describe Savon::Operation do
       Wasabi::Document.any_instance.stubs(:soap_actions).raises(error)
 
       expect { new_operation(:verify_address, wsdl, globals) }.
-        to raise_error(Savon::HTTPError, /#{message}/)
+        to raise_error(Savon2::HTTPError, /#{message}/)
     end
   end
 
   describe ".create without a WSDL" do
     it "returns a new operation" do
       operation = new_operation(:verify_address, no_wsdl, globals)
-      expect(operation).to be_a(Savon::Operation)
+      expect(operation).to be_a(Savon2::Operation)
     end
   end
 
@@ -68,7 +68,7 @@ describe Savon::Operation do
       operation = new_operation(:verify_address, wsdl, globals)
       builder = operation.build(:message => { :test => 'message' })
 
-      expect(builder).to be_a(Savon::Builder)
+      expect(builder).to be_a(Savon2::Builder)
       expect(builder.to_s).to include('<tns:VerifyAddress><tns:test>message</tns:test></tns:VerifyAddress>')
     end
   end
@@ -76,7 +76,7 @@ describe Savon::Operation do
   describe "#call" do
     it "returns a response object" do
       operation = new_operation(:verify_address, wsdl, globals)
-      expect(operation.call).to be_a(Savon::Response)
+      expect(operation.call).to be_a(Savon2::Response)
     end
 
     it "uses the global :endpoint option for the request" do
@@ -93,7 +93,7 @@ describe Savon::Operation do
     end
 
     it "falls back to use the WSDL's endpoint if the :endpoint option was not set" do
-      globals_without_endpoint = Savon::GlobalOptions.new(:log => false)
+      globals_without_endpoint = Savon2::GlobalOptions.new(:log => false)
       HTTPI::Request.any_instance.expects(:url=).with(wsdl.endpoint)
 
       operation = new_operation(:verify_address, wsdl, globals_without_endpoint)
@@ -109,7 +109,7 @@ describe Savon::Operation do
       # XXX: probably the worst spec ever written. refactor! [dh, 2013-01-05]
       http_request = HTTPI::Request.new
       http_request.headers.expects(:[]=).with("Content-Length", "312")
-      Savon::SOAPRequest.any_instance.expects(:build).returns(http_request)
+      Savon2::SOAPRequest.any_instance.expects(:build).returns(http_request)
 
       new_operation(:verify_address, wsdl, globals).call
     end
@@ -165,23 +165,23 @@ describe Savon::Operation do
       expect(actual_soap_action).to eq(%("authenticate"))
     end
 
-    it "returns a Savon::Multipart::Response if available and requested globally" do
+    it "returns a Savon2::Multipart::Response if available and requested globally" do
       globals.multipart true
 
       with_multipart_mocked do
         operation = new_operation(:authenticate, no_wsdl, globals)
         response = operation.call
 
-        expect(response).to be_a(Savon::Multipart::Response)
+        expect(response).to be_a(Savon2::Multipart::Response)
       end
     end
 
-    it "returns a Savon::Multipart::Response if available and requested locally" do
+    it "returns a Savon2::Multipart::Response if available and requested locally" do
       with_multipart_mocked do
         operation = new_operation(:authenticate, no_wsdl, globals)
         response = operation.call(:multipart => true)
 
-        expect(response).to be_a(Savon::Multipart::Response)
+        expect(response).to be_a(Savon2::Multipart::Response)
       end
     end
 
@@ -191,14 +191,14 @@ describe Savon::Operation do
       operation = new_operation(:authenticate, no_wsdl, globals)
 
       expect { operation.call }.
-        to raise_error RuntimeError, /Unable to find Savon::Multipart/
+        to raise_error RuntimeError, /Unable to find Savon2::Multipart/
     end
 
     it "raises if savon-multipart is not available and it was requested locally" do
       operation = new_operation(:authenticate, no_wsdl, globals)
 
       expect { operation.call(:multipart => true) }.
-        to raise_error RuntimeError, /Unable to find Savon::Multipart/
+        to raise_error RuntimeError, /Unable to find Savon2::Multipart/
     end
   end
 
@@ -216,11 +216,11 @@ describe Savon::Operation do
     multipart_mock = Module.new
     multipart_mock.const_set('Response', multipart_response)
 
-    Savon.const_set('Multipart', multipart_mock)
+    Savon2.const_set('Multipart', multipart_mock)
 
     yield
   ensure
-    Savon.send(:remove_const, :Multipart) if Savon.const_defined? :Multipart
+    Savon2.send(:remove_const, :Multipart) if Savon2.const_defined? :Multipart
   end
 
   def inspect_request(response)

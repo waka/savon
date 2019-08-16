@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe Savon::RequestLogger do
+describe Savon2::RequestLogger do
 
   subject            { described_class.new(globals) }
-  let(:globals)      { Savon::GlobalOptions.new(:log => true, :pretty_print_xml => true) }
+  let(:globals)      { Savon2::GlobalOptions.new(:log => true, :pretty_print_xml => true) }
   let(:request) {
     stub('Request',
          :url     => 'http://example.com',
@@ -28,7 +28,7 @@ describe Savon::RequestLogger do
       begin
         globals[:logger].level = Logger::FATAL
 
-        Savon::LogMessage.expects(:new).never
+        Savon2::LogMessage.expects(:new).never
         subject.log(request) { response }
       end
     end

@@ -27,7 +27,7 @@ describe 'Correct translation of attributes to XML' do
   it "new :@attr syntax: correctly maps a Ruby Hash to XML attributes" do
     LogInterceptor.reset_intercepted_request
 
-    client = Savon.client(
+    client = Savon2.client(
       :wsdl => "http://mt205.sabameeting.com/CWS/CWS.asmx?WSDL",
       :log => true,
       :logger => LogInterceptor
@@ -49,7 +49,7 @@ describe 'Correct translation of attributes to XML' do
   it "old :attributes! syntax: correctly maps a Ruby Hash to XML attributes" do
     LogInterceptor.reset_intercepted_request
 
-    client = Savon.client(
+    client = Savon2.client(
       :wsdl => "http://mt205.sabameeting.com/CWS/CWS.asmx?WSDL",
       :log => true,
       :logger => LogInterceptor
