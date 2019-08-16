@@ -1,4 +1,4 @@
-require "savon"
+require "savon2"
 
 module Savon2
   class HTTPError < Error
